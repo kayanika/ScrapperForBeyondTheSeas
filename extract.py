@@ -9,6 +9,9 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import undetected_chromedriver as uc
 from selenium.webdriver.chrome.service import Service
+from db import db_connection
+conn=db_connection()
+cur=conn.cursor()
 
 
 # Set up the Chrome web driver
@@ -36,7 +39,7 @@ driver=uc.Chrome(headless=False,use_subprocess=False,service=service)
 url = 'https://www.phdportal.com/'
 driver.get(url)
 driver.get_screenshot_as_file("screenshot.png")
-time.sleep(10)
+time.sleep(4)
 driver.implicitly_wait(10)
 element=driver.find_element(By.ID, "DisciplineSpotlight")
 print(element.text)
@@ -64,38 +67,68 @@ for Celement in clickableElements:
     #now inside all programs
     driver.get_screenshot_as_file("screenshot1.png")
     
-    for i in range(1, 4):
+    for i in range(1, 2):
         result=driver.find_element(By.XPATH, f'/html/body/div[3]/div[1]/div/div/main/div/div/div/div/article/section/ul/li[{i}]/a')
         #link=result.find_element(By.CSS_SELECTOR, 'a')
         time.sleep(5)
         #link=result.get_attribute('href')
-        
-        driver.execute_script("return arguments[0].click();", result); 
+        #ActionChains(driver).move_to_element(result)
+        #driver.get_screenshot_as_file("screenshot2.png")
+        driver.get(result.get_attribute('href'))
+        #driver.execute_script("return arguments[0].click();", result); 
         #switc to new window
         #driver.get(link)
         print("clicked")
         time.sleep(3)
         print(driver.current_url)
-        #WebDriverWait(driver, 20).until(EC.number_of_windows_to_be(2))
-        print(driver.window_handles)
-        driver.switch_to.window(driver.window_handles[1])
-        time.sleep(10)
-        driver.get_screenshot_as_file("screenshot3.png")
+        
+        time.sleep(5)
+        #driver.get_screenshot_as_file("screenshot"+{i}+ ".png")
         #close this window
-        driver.close()
+        #driver.close()
+        #duration=driver.find_element(By.CLASS_NAME, "js-duration")
+        duration=driver.find_element(By.XPATH, "/html/body/div[2]/div[2]/div/div/section[1]/div/div[1]/div/div[2]/div[1]")
+        duration=duration.text
+        print("duration: "+duration)
+        tuition=driver.find_element(By.CLASS_NAME, "TuitionFeeContainer")
+        tuition=tuition.text
+        print("tuition: "+tuition)
+        timingElements=driver.find_elements(By.CLASS_NAME, "TimingContainer")
+        for timingElement in timingElements:
+            timing=timingElement.text
+            print("timing: "+timing)
+        name=driver.find_element(By.XPATH, "/html/body/div[2]/div[2]/div/div/article/header/div/a[1]")
+        # <a class="Name TextLink Connector js-organisation-info-link" href="/universities/11911/curtin-university.html"> Curtin University </a>
+        name=name.text
+        print("name: "+name)
+        location=driver.find_element(By.CLASS_NAME, "LocationItems")
+        location=location.text
+        print("location: "+location)
+        rank=driver.find_element(By.CLASS_NAME, "Ranking")
+        rank=rank.find_element(By.CLASS_NAME, "Value")
+        rank=rank.text
+        print("rank: "+rank)
+        rating=driver.find_element(By.CLASS_NAME, "Rating")
+        rating=rating.find_element(By.CLASS_NAME, "Value")
+        rating=rating.text
+        print("rating: "+rating)
 
         #switch back to main window
-        driver.switch_to.window(driver.window_handles[0])
+        #driver.switch_to.window(driver.window_handles[0])
         driver.back()
+        print(driver.current_url)
+        #driver.get_screenshot_as_file("screenshot4.png")
     
    
         
 
     
     driver.back()
-    time.sleep(10)
+    time.sleep(5)
     driver.back()
-    time.sleep(10)
+    
+
+driver.back()    
    # driver.get_screenshot_as_file("screenshot1.png")
 
 # # Find the relevant elements containing program names and tuition fees
