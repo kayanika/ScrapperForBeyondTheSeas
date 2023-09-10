@@ -7,7 +7,7 @@ def db_connection():
         conn=psycopg2.connect( 
             user='postgres',
             host='localhost',
-            database='BeyondTheSeas',
+            database='new',
             password='1234',
             port= 5432)
     except Exception as e:
